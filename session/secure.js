@@ -6,17 +6,23 @@ const app = express()
 const secret = process.argv[2];
 app.use(express.urlencoded({ extended: false }))
 
-app.use(
-  session({
-    secret: `${secret}`,
-    cookie: {
-        httpOnly: true,
-        sameSite: true,
-    },
-    resave: false,
-    saveUninitialized: false
-  })
-)
+const cookieParser = require('cookie-parser');
+
+// Middleware setup
+const secret = process.argv[2];
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(session({
+  secret: `${secret}`,
+  cookie: {
+    httpOnly: true,
+    sameSite: true,
+  },
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
   let name = "Guest"
